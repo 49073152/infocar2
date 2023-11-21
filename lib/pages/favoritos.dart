@@ -12,6 +12,8 @@ class PageFavoritos extends StatefulWidget {
 class _PageFavoritosState extends State<PageFavoritos> {
   @override
   Widget build(BuildContext context) {
+    //terminar de consumir o provider (pegando a lista de carros favoritos)
+    //depois iremos conectar a uma API externa
     return Consumer<FavoritosCarros>(
       builder: (context, fav, child) => Text(
         "Quantidade de carros favoritos: ${fav.carros.length}",
