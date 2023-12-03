@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:infocar/models/carro.dart';
+import 'package:infocar/models/marcas.dart';
+import 'package:infocar/services/carro_service.dart';
 
 class PagePerfil extends StatefulWidget {
   const PagePerfil({super.key});
@@ -10,11 +12,14 @@ class PagePerfil extends StatefulWidget {
 
 class _PagePerfilState extends State<PagePerfil> {
   late Future<Carro> carroFuture;
-
+  
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
+    carroFuture = getCar();
+   
+    //getMarcas()
   }
 
   @override
@@ -27,6 +32,7 @@ class _PagePerfilState extends State<PagePerfil> {
             children: [
               Text(snapshot.data!.brand),
               Text(snapshot.data!.model),
+              Text(snapshot.data!.price),
             ],
           );
         } else if (snapshot.hasError) {

@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:infocar/models/marcas.dart';
+import 'package:infocar/services/carro_service.dart';
 
 class Marcas extends StatefulWidget {
   const Marcas({super.key});
@@ -8,6 +10,14 @@ class Marcas extends StatefulWidget {
 }
 
 class _MarcasState extends State<Marcas> {
+  late Future<List<Marca>> marcasFuture;
+
+  @override
+  void initState() {
+    super.initState();
+    marcasFuture = getMarcas();
+  }
+
   MarcaItem(String titulo) => Container(
         decoration: BoxDecoration(
           color: Colors.white,
@@ -22,11 +32,28 @@ class _MarcasState extends State<Marcas> {
             ),
             Text(
               titulo,
+              overflow: TextOverflow.ellipsis,
               style: TextStyle(fontSize: 18),
             ),
           ],
         ),
       );
+
+  Widget buildMarcas(List<Marca> marcas) {
+    return GridView.builder(
+      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+        crossAxisCount: 4, // number of items in each row
+        mainAxisSpacing: 10, // spacing between rows
+        crossAxisSpacing: 8.0, // spacing between columns
+      ),
+      padding: EdgeInsets.fromLTRB(0, 0, 0, 0),
+      shrinkWrap: true,
+      itemCount: 8,
+      itemBuilder: (context, index) {
+        return MarcaItem(marcas[index].name);
+      },
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -62,23 +89,38 @@ class _MarcasState extends State<Marcas> {
                 ),
               ],
             ),
-            GridView.count(
-              padding: EdgeInsets.fromLTRB(0, 10, 0, 5),
-              crossAxisCount: 4,
-              crossAxisSpacing: 8,
-              mainAxisSpacing: 10,
-              shrinkWrap: true,
-              children: [
-                MarcaItem("Acura"),
-                MarcaItem("Acura"),
-                MarcaItem("Acura"),
-                MarcaItem("Acura"),
-                MarcaItem("Acura"),
-                MarcaItem("Acura"),
-                MarcaItem("Acura"),
-                MarcaItem("Acura"),
-              ],
+            FutureBuilder<List<Marca>>(
+              future: marcasFuture,
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return const CircularProgressIndicator();
+                } else if (snapshot.hasData) {
+                  // return const Text(" available");
+                  final marcas = snapshot.data!;
+                  return buildMarcas(marcas);
+                } else {
+                  return const Text("No data available");
+                }
+              },
             ),
+
+            // GridView.count(
+            //   padding: EdgeInsets.fromLTRB(0, 10, 0, 5),
+            //   crossAxisCount: 4,
+            //   crossAxisSpacing: 8,
+            //   mainAxisSpacing: 10,
+            //   shrinkWrap: true,
+            //   children: [
+            //     MarcaItem("Acura"),
+            //     MarcaItem("Acura"),
+            //     MarcaItem("Acura"),
+            //     MarcaItem("Acura"),
+            //     MarcaItem("Acura"),
+            //     MarcaItem("Acura"),
+            //     MarcaItem("Acura"),
+            //     MarcaItem("Acura"),
+            //   ],
+            // ),
           ],
         ),
       ),
